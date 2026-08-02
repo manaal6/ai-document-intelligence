@@ -1,0 +1,44 @@
+Problem statement and proposed solution
+*
+Businesses and students spend significant time reading, understanding, summarizing, and extracting information from large documents. Manual document analysis is time-consuming, error-prone, inconsistent, and not scalable. This project is an AI Document Intelligence Assistant that uses Retrieval-Augmented Generation (RAG) and Groq's free cloud LLM API to ingest documents (PDF, TXT, DOCX), index their content using vector embeddings, answer questions about them with source-backed responses, generate summaries, and extract structured information.
+
+Main project features
+*
+- Smart Upload — Drag & drop interface with file validation and progress tracking
+- AI Chat — RAG-powered Q&A with source references and conversation history
+- Auto Summary — Executive summary, key points, action items, findings, conclusions
+- Info Extraction — Names, dates, organizations, numbers, tasks, deadlines
+- Export — Download summaries as PDF or extracted data as JSON
+- Responsive UI — Modern SaaS-style interface, works on all devices
+- Free — Uses Groq's free API tier, no paid services
+
+Technologies and AI tools used
+*
+Languages: Python 3.11+, JavaScript (JSX)
+Frontend: React 18, Vite, Tailwind CSS, React Router v6, Axios, Lucide React
+Backend: FastAPI, SQLAlchemy, Pydantic
+PDF Extraction: pypdf
+DOCX Extraction: python-docx
+Text Splitting: LangChain (RecursiveCharacterTextSplitter)
+Embeddings: sentence-transformers (all-MiniLM-L6-v2)
+Vector Store: ChromaDB (persistent, HNSW indexing)
+LLM: Groq API (Llama 3.1 8B Instant) — free cloud inference
+Database: SQLite
+PDF Export: ReportLab
+Containerization: Docker Compose
+AI Architecture: RAG (Retrieval-Augmented Generation)
+AI Coding Assistant: Claude (Anthropic) for code generation and architecture guidance
+
+Current project status
+*
+Functional with minor limitations
+
+Known limitations or incomplete features
+*
+- No user authentication — Single-user system, no login/multi-user support
+- No batch upload — Documents must be uploaded one at a time
+- No OCR support — Cannot process scanned PDFs or images
+- No real-time streaming — LLM responses are returned in full, not streamed token-by-token
+- No web search integration — Answers are limited to document content only
+- Single document chat — Can only chat with one document at a time, no cross-document querying
+- No custom model fine-tuning — Uses off-the-shelf models only
