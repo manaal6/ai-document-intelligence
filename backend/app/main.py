@@ -44,6 +44,7 @@ app.include_router(export.router)
 app.mount("/uploads", StaticFiles(directory=str(settings.UPLOAD_DIR)), name="uploads")
 
 # Serve frontend static files
+# main.py is at backend/app/main.py, static is at backend/static/
 STATIC_DIR = Path(__file__).parent.parent / "static"
 print(f"Static dir: {STATIC_DIR}, exists: {STATIC_DIR.exists()}")
 if STATIC_DIR.exists():
