@@ -43,29 +43,6 @@ app.include_router(export.router)
 # Serve uploaded files
 app.mount("/uploads", StaticFiles(directory=str(settings.UPLOAD_DIR)), name="uploads")
 
-# Serve frontend static files
-# main.py is at backend/app/main.py, static is at backend/static/
-STATIC_DIR = Path(__file__).parent.parent / "static"
-print(f"Static dir: {STATIC_DIR}, exists: {STATIC_DIR.exists()}")
-if STATIC_DIR.exists():
-    app.mount("/assets", StaticFiles(directory=str(STATIC_DIR / "assets")), name="static-assets")
-
-    @app.get("/")
-    async def serve_index():
-        """Serve the frontend index.html."""
-        return FileResponse(STATIC_DIR / "index.html")
-
-    @app.get("/{full_path:path}")
-    async def serve_frontend(request: Request, full_path: str):
-        """Serve frontend files, falling back to index.html for SPA routing."""
-        # Skip API routes
-        if full_path.startswith("api/") or full_path.startswith("docs") or full_path.startswith("redoc") or full_path.startswith("openapi"):
-            return None
-        file_path = STATIC_DIR / full_path
-        if file_path.is_file():
-            return FileResponse(file_path)
-        return FileResponse(STATIC_DIR / "index.html")
-
 
 @app.get("/api/stats")
 async def get_stats():
@@ -103,3 +80,22 @@ async def get_stats():
         }
     finally:
         db.close()
+
+
+# ── Serve Frontend (must be last — catch-all route) ──────────────
+STATIC_DIR = Path(__file__).parent.parent / "static"
+if STATIC_DIR.exists():
+    app.mount("/assets", StaticFiles(directory=str(STATIC_DIR / "assets")), name="static-assets")
+
+    @app.get("/")
+    async def serve_index():
+        """Serve the frontend index.html."""
+        return FileResponse(STATIC_DIR / "index.html")
+
+    @app.get("/{full_path:path}")
+    async def serve_frontend(request: Request, full_path: str):
+        """Serve frontend files, falling back to index.html for SPA routing."""
+        file_path = STATIC_DIR / full_path
+        if file_path.is_file():
+            return FileResponse(file_path)
+        return FileResponse(STATIC_DIR / "index.html")
