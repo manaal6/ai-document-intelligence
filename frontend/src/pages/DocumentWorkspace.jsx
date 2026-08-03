@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { useParams, Link } from 'react-router-dom'
 import {
   ArrowLeft,
@@ -31,21 +31,24 @@ export default function DocumentWorkspace() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
 
-  useEffect(() => {
-    fetchDocument()
-  }, [id])
-
-  const fetchDocument = async () => {
-    setLoading(true)
+  const fetchDocument = useCallback(async () => {
     try {
       const res = await getDocument(id)
       setDoc(res.data)
     } catch (err) {
       setError('Document not found.')
-    } finally {
-      setLoading(false)
     }
-  }
+  }, [id])
+
+  useEffect(() => {
+    setLoading(true)
+    fetchDocument().finally(() => setLoading(false))
+  }, [id, fetchDocument])
+
+  // Silent refresh — updates doc state without showing loading spinner
+  const refreshDocument = useCallback(async () => {
+    await fetchDocument()
+  }, [fetchDocument])
 
   const formatSize = (bytes) => {
     if (!bytes) return '0 B'
@@ -171,8 +174,8 @@ export default function DocumentWorkspace() {
           {/* Tab Content */}
           <div className="card min-h-[500px]">
             {activeTab === 'chat' && <ChatInterface documentId={doc.id} />}
-            {activeTab === 'summary' && <SummaryView documentId={doc.id} onDataGenerated={fetchDocument} />}
-            {activeTab === 'extraction' && <ExtractionView documentId={doc.id} onDataGenerated={fetchDocument} />}
+            {activeTab === 'summary' && <SummaryView documentId={doc.id} onDataGenerated={refreshDocument} />}
+            {activeTab === 'extraction' && <ExtractionView documentId={doc.id} onDataGenerated={refreshDocument} />}
           </div>
         </div>
       </div>
