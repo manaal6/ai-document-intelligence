@@ -48,6 +48,11 @@ STATIC_DIR = Path(__file__).parent.parent / "static"
 if STATIC_DIR.exists():
     app.mount("/assets", StaticFiles(directory=str(STATIC_DIR / "assets")), name="static-assets")
 
+    @app.get("/")
+    async def serve_index():
+        """Serve the frontend index.html."""
+        return FileResponse(STATIC_DIR / "index.html")
+
     @app.get("/{full_path:path}")
     async def serve_frontend(request: Request, full_path: str):
         """Serve frontend files, falling back to index.html for SPA routing."""
