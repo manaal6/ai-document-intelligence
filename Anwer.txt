@@ -1,0 +1,52 @@
+Problem statement and proposed solution
+*
+Briefly explain the problem, target users, and how your project solves it.
+
+Main project features
+*
+List the main working features of your project.
+
+Technologies and AI tools used
+*
+Mention programming languages, frameworks, databases, APIs, AI models, coding assistants, cloud services, and deployment platforms.
+
+Current project status
+*
+Fully functional
+Functional with minor limitations
+Partially functional
+Prototype only
+Known limitations or incomplete features
+*
+Mention known bugs, missing features, or limitations. Write None if there are none.
+
+Source Code and Project Files
+Upload your source-code ZIP file to Google Drive, set access to Anyone with the link, and paste the link below.
+Source-code ZIP file Google Drive link
+*
+Upload one .zip file to Google Drive and paste its shareable link. The ZIP must contain the complete source code, README, dependency files, database setup, configuration example, and required project assets.
+ZIP file name
+*
+Use this format: ProjectName_InternName_InventaCoreAI.zip
+Source-code ZIP confirmation
+*
+The ZIP file contains the complete source code, README, dependency files, setup instructions, database files where applicable, and all required assets.
+ZIP file access confirmation
+*
+I confirm that the Google Drive ZIP file is accessible to anyone with the link.
+Security confirmation
+*
+I confirm that the ZIP file does not contain API keys, passwords, secret tokens, private credentials, .env files, node_modules, virtual environments, or unnecessary build folders.
+Demo video link
+*
+Provide an accessible YouTube or Google Drive video link.
+Live project link
+Provide the deployed application link. Leave blank if no live version is available.
+Testing instructions
+*
+Explain how evaluators can install, run, log in to, and test the project.
+
+Test account credentials
+*
+Provide a dedicated test username and password if login is required. Write Not applicable if no login is required. Do not provide a personal account.
+
