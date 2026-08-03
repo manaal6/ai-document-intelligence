@@ -46,7 +46,7 @@ export default function UploadPage() {
       {/* Supported Formats */}
       <div className="card">
         <h3 className="font-medium text-dark-200 mb-3">Supported Formats</h3>
-        <div className="grid grid-cols-3 gap-3">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
           {[
             { ext: 'PDF', desc: 'Portable Document Format', icon: '📄' },
             { ext: 'TXT', desc: 'Plain Text Files', icon: '📝' },

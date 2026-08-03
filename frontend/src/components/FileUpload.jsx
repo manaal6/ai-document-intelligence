@@ -99,7 +99,7 @@ export default function FileUpload({ onUploadComplete }) {
           onDragOver={handleDrag}
           onDrop={handleDrop}
           onClick={() => fileInputRef.current?.click()}
-          className={`border-2 border-dashed rounded-2xl p-12 text-center cursor-pointer transition-all duration-200 ${
+          className={`border-2 border-dashed rounded-2xl p-8 sm:p-12 text-center cursor-pointer transition-all duration-200 ${
             dragActive
               ? 'border-primary-500 bg-primary-500/5'
               : 'border-dark-600 hover:border-primary-500/50 hover:bg-dark-800/50'

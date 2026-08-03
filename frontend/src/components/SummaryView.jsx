@@ -22,8 +22,8 @@ export default function SummaryView({ documentId }) {
 
   if (!summary && !loading) {
     return (
-      <div className="text-center py-12">
-        <Sparkles className="w-12 h-12 mx-auto mb-3 text-dark-500" />
+      <div className="text-center py-8 sm:py-12">
+        <Sparkles className="w-10 h-10 sm:w-12 sm:h-12 mx-auto mb-3 text-dark-500" />
         <p className="font-medium text-dark-300 mb-2">Generate AI Summary</p>
         <p className="text-sm text-dark-400 mb-4">
           Get an executive summary, key points, and action items.
@@ -38,8 +38,8 @@ export default function SummaryView({ documentId }) {
 
   if (loading) {
     return (
-      <div className="text-center py-12">
-        <Loader2 className="w-12 h-12 mx-auto mb-3 text-primary-400 animate-spin" />
+      <div className="text-center py-8 sm:py-12">
+        <Loader2 className="w-10 h-10 sm:w-12 sm:h-12 mx-auto mb-3 text-primary-400 animate-spin" />
         <p className="font-medium text-dark-300">Analyzing document...</p>
         <p className="text-sm text-dark-400">This may take a moment.</p>
       </div>
@@ -48,10 +48,10 @@ export default function SummaryView({ documentId }) {
 
   if (error) {
     return (
-      <div className="text-center py-12">
-        <AlertTriangle className="w-12 h-12 mx-auto mb-3 text-red-400" />
+      <div className="text-center py-8 sm:py-12">
+        <AlertTriangle className="w-10 h-10 sm:w-12 sm:h-12 mx-auto mb-3 text-red-400" />
         <p className="font-medium text-red-400 mb-2">Error</p>
-        <p className="text-sm text-dark-400 mb-4">{error}</p>
+        <p className="text-sm text-dark-400 mb-4 max-w-md mx-auto">{error}</p>
         <button onClick={handleGenerate} className="btn-secondary">
           Try Again
         </button>

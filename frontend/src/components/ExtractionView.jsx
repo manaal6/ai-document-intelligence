@@ -41,8 +41,8 @@ export default function ExtractionView({ documentId }) {
 
   if (!data && !loading) {
     return (
-      <div className="text-center py-12">
-        <Search className="w-12 h-12 mx-auto mb-3 text-dark-500" />
+      <div className="text-center py-8 sm:py-12">
+        <Search className="w-10 h-10 sm:w-12 sm:h-12 mx-auto mb-3 text-dark-500" />
         <p className="font-medium text-dark-300 mb-2">Extract Information</p>
         <p className="text-sm text-dark-400 mb-4">
           Pull out names, dates, organizations, and more.
@@ -57,8 +57,8 @@ export default function ExtractionView({ documentId }) {
 
   if (loading) {
     return (
-      <div className="text-center py-12">
-        <Loader2 className="w-12 h-12 mx-auto mb-3 text-primary-400 animate-spin" />
+      <div className="text-center py-8 sm:py-12">
+        <Loader2 className="w-10 h-10 sm:w-12 sm:h-12 mx-auto mb-3 text-primary-400 animate-spin" />
         <p className="font-medium text-dark-300">Extracting information...</p>
       </div>
     )
@@ -66,10 +66,10 @@ export default function ExtractionView({ documentId }) {
 
   if (error) {
     return (
-      <div className="text-center py-12">
-        <AlertTriangle className="w-12 h-12 mx-auto mb-3 text-red-400" />
+      <div className="text-center py-8 sm:py-12">
+        <AlertTriangle className="w-10 h-10 sm:w-12 sm:h-12 mx-auto mb-3 text-red-400" />
         <p className="font-medium text-red-400 mb-2">Error</p>
-        <p className="text-sm text-dark-400 mb-4">{error}</p>
+        <p className="text-sm text-dark-400 mb-4 max-w-md mx-auto">{error}</p>
         <button onClick={handleExtract} className="btn-secondary">
           Try Again
         </button>

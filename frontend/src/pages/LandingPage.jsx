@@ -55,7 +55,7 @@ const techStack = [
   'LangChain',
   'ChromaDB',
   'Sentence Transformers',
-  'Ollama / Llama 3.1',
+  'Groq / Llama 3.1',
   'SQLAlchemy',
   'SQLite',
 ]
@@ -72,7 +72,7 @@ export default function LandingPage() {
     <div className="min-h-screen bg-dark-950">
       {/* Nav */}
       <nav className="sticky top-0 z-50 bg-dark-950/80 backdrop-blur-md border-b border-dark-700">
-        <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-3 sm:py-4 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 bg-gradient-to-br from-primary-500 to-primary-700 rounded-xl flex items-center justify-center">
               <Brain className="w-6 h-6 text-white" />
@@ -89,7 +89,7 @@ export default function LandingPage() {
       {/* Hero */}
       <section className="relative overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-b from-primary-500/5 to-transparent" />
-        <div className="max-w-7xl mx-auto px-6 py-24 md:py-32 text-center relative">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-16 sm:py-24 md:py-32 text-center relative">
           <div className="inline-flex items-center gap-2 bg-primary-500/10 text-primary-400 text-sm font-medium px-4 py-1.5 rounded-full border border-primary-500/20 mb-6">
             <Sparkles className="w-4 h-4" />
             AI-Powered Document Analysis
@@ -118,9 +118,9 @@ export default function LandingPage() {
       </section>
 
       {/* How it Works */}
-      <section className="max-w-7xl mx-auto px-6 py-20">
-        <h2 className="text-3xl font-bold text-white text-center mb-12">How It Works</h2>
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 py-16 sm:py-20">
+        <h2 className="text-2xl sm:text-3xl font-bold text-white text-center mb-8 sm:mb-12">How It Works</h2>
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-8">
           {steps.map((step, i) => (
             <div key={i} className="text-center">
               <div className="w-14 h-14 bg-primary-600/10 border border-primary-500/20 rounded-2xl flex items-center justify-center mx-auto mb-4">
@@ -134,8 +134,8 @@ export default function LandingPage() {
       </section>
 
       {/* Features */}
-      <section className="max-w-7xl mx-auto px-6 py-20">
-        <h2 className="text-3xl font-bold text-white text-center mb-4">Features</h2>
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 py-16 sm:py-20">
+        <h2 className="text-2xl sm:text-3xl font-bold text-white text-center mb-4">Features</h2>
         <p className="text-dark-400 text-center mb-12 max-w-xl mx-auto">
           Everything you need to analyze and interact with your documents using AI.
         </p>
@@ -153,8 +153,8 @@ export default function LandingPage() {
       </section>
 
       {/* Tech Stack */}
-      <section className="max-w-7xl mx-auto px-6 py-20">
-        <h2 className="text-3xl font-bold text-white text-center mb-4">Technology Stack</h2>
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 py-16 sm:py-20">
+        <h2 className="text-2xl sm:text-3xl font-bold text-white text-center mb-4">Technology Stack</h2>
         <p className="text-dark-400 text-center mb-12">Built with modern, free, open-source technologies.</p>
         <div className="flex flex-wrap justify-center gap-3 max-w-3xl mx-auto">
           {techStack.map((tech, i) => (
@@ -169,9 +169,9 @@ export default function LandingPage() {
       </section>
 
       {/* Why */}
-      <section className="max-w-7xl mx-auto px-6 py-20">
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 py-16 sm:py-20">
         <div className="card bg-gradient-to-br from-dark-800 to-dark-900">
-          <div className="grid md:grid-cols-3 gap-8 text-center">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8 text-center">
             <div>
               <Zap className="w-8 h-8 text-primary-400 mx-auto mb-3" />
               <h3 className="font-semibold text-white mb-1">100% Free</h3>
@@ -192,8 +192,8 @@ export default function LandingPage() {
       </section>
 
       {/* Footer */}
-      <footer className="border-t border-dark-700 py-8">
-        <div className="max-w-7xl mx-auto px-6 text-center">
+      <footer className="border-t border-dark-700 py-6 sm:py-8">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 text-center">
           <p className="text-sm text-dark-400">
             Built for InventaCore AI Intern Build Challenge 2026
           </p>

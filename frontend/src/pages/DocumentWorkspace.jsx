@@ -78,16 +78,16 @@ export default function DocumentWorkspace() {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-3">
-          <Link to="/dashboard" className="p-2 text-dark-400 hover:text-white hover:bg-dark-800 rounded-lg">
+      <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4">
+        <div className="flex items-center gap-3 min-w-0">
+          <Link to="/dashboard" className="p-2 text-dark-400 hover:text-white hover:bg-dark-800 rounded-lg shrink-0">
             <ArrowLeft className="w-5 h-5" />
           </Link>
-          <div>
-            <h1 className="text-lg font-bold text-white truncate max-w-md">
+          <div className="min-w-0">
+            <h1 className="text-lg font-bold text-white truncate">
               {doc.original_filename}
             </h1>
-            <div className="flex items-center gap-2 text-sm text-dark-400 mt-0.5">
+            <div className="flex flex-wrap items-center gap-2 text-sm text-dark-400 mt-0.5">
               <span>{formatSize(doc.file_size)}</span>
               <span>•</span>
               <span className="uppercase">{doc.file_type}</span>
@@ -97,11 +97,13 @@ export default function DocumentWorkspace() {
             </div>
           </div>
         </div>
-        <ExportButton
-          documentId={doc.id}
-          hasSummary={!!doc.summary}
-          hasExtraction={!!doc.extracted_info}
-        />
+        <div className="shrink-0">
+          <ExportButton
+            documentId={doc.id}
+            hasSummary={!!doc.summary}
+            hasExtraction={!!doc.extracted_info}
+          />
+        </div>
       </div>
 
       <div className="flex flex-col lg:flex-row gap-6">

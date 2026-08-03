@@ -66,7 +66,7 @@ export default function Dashboard() {
   return (
     <div className="space-y-8">
       {/* Header */}
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <h1 className="text-2xl font-bold text-white">Dashboard</h1>
           <p className="text-dark-400 text-sm mt-1">Overview of your document intelligence platform.</p>
@@ -96,16 +96,16 @@ export default function Dashboard() {
 
       {/* Documents */}
       <div>
-        <div className="flex items-center justify-between mb-4">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4">
           <h2 className="text-lg font-semibold text-white">Documents</h2>
-          <div className="relative">
+          <div className="relative w-full sm:w-64">
             <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-dark-400" />
             <input
               type="text"
               placeholder="Search documents..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="input-field pl-9 w-64 text-sm"
+              className="input-field pl-9 w-full text-sm"
             />
           </div>
         </div>

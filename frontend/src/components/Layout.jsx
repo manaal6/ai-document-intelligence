@@ -73,7 +73,7 @@ export default function Layout() {
         {/* Footer */}
         <div className="p-4 border-t border-dark-700">
           <div className="card text-center py-3">
-            <p className="text-xs text-dark-400">Powered by Ollama + RAG</p>
+            <p className="text-xs text-dark-400">Powered by Groq + RAG</p>
           </div>
         </div>
       </aside>
@@ -82,7 +82,7 @@ export default function Layout() {
       <main className="flex-1 min-h-screen">
         {/* Top bar */}
         <header className="sticky top-0 z-30 bg-dark-950/80 backdrop-blur-md border-b border-dark-700">
-          <div className="flex items-center justify-between px-6 py-4">
+          <div className="flex items-center justify-between px-4 py-3 sm:px-6 sm:py-4">
             <button
               onClick={() => setSidebarOpen(!sidebarOpen)}
               className="lg:hidden p-2 text-dark-400 hover:text-white"
@@ -103,7 +103,7 @@ export default function Layout() {
         </header>
 
         {/* Page content */}
-        <div className="p-6">
+        <div className="p-4 sm:p-6">
           <Outlet />
         </div>
       </main>

@@ -38,21 +38,21 @@ export default function SettingsPage() {
 
         <div>
           <label className="block text-sm font-medium text-dark-300 mb-1.5">
-            Ollama Model
+            LLM Provider
           </label>
           <select
             value={settings.ollamaModel}
             onChange={(e) => setSettings({ ...settings, ollamaModel: e.target.value })}
             className="input-field"
           >
-            <option value="llama3.1">Llama 3.1</option>
+            <option value="llama3.1">Llama 3.1 (Groq)</option>
             <option value="qwen2.5">Qwen 2.5</option>
             <option value="mistral">Mistral</option>
           </select>
-          <p className="text-xs text-dark-500 mt-1">Select the model pulled in Ollama.</p>
+          <p className="text-xs text-dark-500 mt-1">Select the model to use for AI processing.</p>
         </div>
 
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
             <label className="block text-sm font-medium text-dark-300 mb-1.5">
               Temperature: {settings.temperature}
@@ -95,7 +95,7 @@ export default function SettingsPage() {
           RAG Configuration
         </h3>
 
-        <div className="grid grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
           <div>
             <label className="block text-sm font-medium text-dark-300 mb-1.5">
               Chunk Size
@@ -160,8 +160,8 @@ export default function SettingsPage() {
         <p className="text-sm text-dark-300 leading-relaxed">
           Settings are saved to your browser's local storage. Backend settings
           require editing the <code className="bg-dark-800 px-1.5 py-0.5 rounded text-primary-300">.env</code> file
-          and restarting the server. Make sure the Ollama model you select is
-          pulled via <code className="bg-dark-800 px-1.5 py-0.5 rounded text-primary-300">ollama pull {'<model>'}</code>.
+          and restarting the server. Make sure your Groq API key is configured
+          in the <code className="bg-dark-800 px-1.5 py-0.5 rounded text-primary-300">.env</code> file.
         </p>
       </div>
     </div>

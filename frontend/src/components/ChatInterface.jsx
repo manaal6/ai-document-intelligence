@@ -38,7 +38,7 @@ export default function ChatInterface({ documentId }) {
         ...prev,
         {
           role: 'assistant',
-          content: 'Sorry, I encountered an error. Please make sure Ollama is running and try again.',
+          content: 'Sorry, I encountered an error. Please check your API configuration and try again.',
           sources: [],
         },
       ])
@@ -140,7 +140,7 @@ export default function ChatInterface({ documentId }) {
       </div>
 
       {/* Input */}
-      <div className="p-4 border-t border-dark-700">
+      <div className="p-3 sm:p-4 border-t border-dark-700">
         <div className="flex gap-2">
           <input
             ref={inputRef}
@@ -148,14 +148,14 @@ export default function ChatInterface({ documentId }) {
             value={input}
             onChange={(e) => setInput(e.target.value)}
             onKeyDown={handleKeyDown}
-            placeholder="Ask a question about this document..."
-            className="input-field flex-1"
+            placeholder="Ask a question..."
+            className="input-field flex-1 text-sm sm:text-base"
             disabled={loading}
           />
           <button
             onClick={sendMessage}
             disabled={!input.trim() || loading}
-            className="btn-primary px-4"
+            className="btn-primary px-3 sm:px-4"
           >
             <Send className="w-4 h-4" />
           </button>
