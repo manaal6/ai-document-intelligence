@@ -51,21 +51,13 @@ if STATIC_DIR.exists():
     @app.get("/{full_path:path}")
     async def serve_frontend(request: Request, full_path: str):
         """Serve frontend files, falling back to index.html for SPA routing."""
+        # Skip API routes
+        if full_path.startswith("api/") or full_path.startswith("docs") or full_path.startswith("redoc") or full_path.startswith("openapi"):
+            return None
         file_path = STATIC_DIR / full_path
         if file_path.is_file():
             return FileResponse(file_path)
         return FileResponse(STATIC_DIR / "index.html")
-
-
-@app.get("/")
-async def root():
-    """Health check endpoint."""
-    return {
-        "name": settings.APP_NAME,
-        "version": settings.APP_VERSION,
-        "status": "running",
-        "docs": "/docs",
-    }
 
 
 @app.get("/api/stats")
