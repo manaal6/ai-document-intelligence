@@ -21,7 +21,7 @@ const extractionCategories = [
   { key: 'deadlines', label: 'Deadlines', icon: Clock, color: 'text-red-400', bg: 'bg-red-500/10' },
 ]
 
-export default function ExtractionView({ documentId }) {
+export default function ExtractionView({ documentId, onDataGenerated }) {
   const [data, setData] = useState(null)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(null)
@@ -32,6 +32,7 @@ export default function ExtractionView({ documentId }) {
     try {
       const res = await extractInformation(documentId)
       setData(res.data)
+      onDataGenerated?.()
     } catch (err) {
       setError(err.response?.data?.detail || 'Failed to extract information.')
     } finally {

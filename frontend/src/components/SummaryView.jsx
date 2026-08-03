@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { Sparkles, CheckCircle, AlertTriangle, Loader2, Target, ListTodo, Lightbulb } from 'lucide-react'
 import { generateSummary } from '../services/api'
 
-export default function SummaryView({ documentId }) {
+export default function SummaryView({ documentId, onDataGenerated }) {
   const [summary, setSummary] = useState(null)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(null)
@@ -13,6 +13,7 @@ export default function SummaryView({ documentId }) {
     try {
       const res = await generateSummary(documentId)
       setSummary(res.data)
+      onDataGenerated?.()
     } catch (err) {
       setError(err.response?.data?.detail || 'Failed to generate summary.')
     } finally {

@@ -171,8 +171,8 @@ export default function DocumentWorkspace() {
           {/* Tab Content */}
           <div className="card min-h-[500px]">
             {activeTab === 'chat' && <ChatInterface documentId={doc.id} />}
-            {activeTab === 'summary' && <SummaryView documentId={doc.id} />}
-            {activeTab === 'extraction' && <ExtractionView documentId={doc.id} />}
+            {activeTab === 'summary' && <SummaryView documentId={doc.id} onDataGenerated={fetchDocument} />}
+            {activeTab === 'extraction' && <ExtractionView documentId={doc.id} onDataGenerated={fetchDocument} />}
           </div>
         </div>
       </div>
