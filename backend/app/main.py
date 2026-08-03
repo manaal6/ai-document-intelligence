@@ -45,6 +45,7 @@ app.mount("/uploads", StaticFiles(directory=str(settings.UPLOAD_DIR)), name="upl
 
 # Serve frontend static files
 STATIC_DIR = Path(__file__).parent.parent / "static"
+print(f"Static dir: {STATIC_DIR}, exists: {STATIC_DIR.exists()}")
 if STATIC_DIR.exists():
     app.mount("/assets", StaticFiles(directory=str(STATIC_DIR / "assets")), name="static-assets")
 
