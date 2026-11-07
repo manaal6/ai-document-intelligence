@@ -17,7 +17,7 @@ def _get_client() -> Groq:
 def query_groq(prompt: str, system_prompt: str = "") -> str:
     """Send a prompt to the Groq API and return the response."""
     client = _get_client()
-    model = os.getenv("GROQ_MODEL", "llama-3.1-8b-instant")
+    model = os.getenv("GROQ_MODEL", settings.GROQ_MODEL or "qwen/qwen3.8-27b")
 
     messages = []
     if system_prompt:
