@@ -1,11 +1,9 @@
 """Document processing service: text extraction, cleaning, and chunking."""
 
 import re
-from pathlib import Path
 
 from pypdf import PdfReader
 from docx import Document as DocxDocument
-from langchain_text_splitters import RecursiveCharacterTextSplitter
 
 from ..config import settings
 
@@ -52,23 +50,58 @@ def extract_text(file_path: str, file_type: str) -> str:
 
 def clean_text(text: str) -> str:
     """Clean and normalize extracted text."""
-    # Remove excessive whitespace
     text = re.sub(r"\n{3,}", "\n\n", text)
     text = re.sub(r"[ \t]+", " ", text)
-    # Remove non-printable characters except newlines and tabs
     text = re.sub(r"[^\x20-\x7E\n\t]", "", text)
     return text.strip()
 
 
 def chunk_text(text: str) -> list[str]:
-    """Split text into chunks for embedding."""
-    splitter = RecursiveCharacterTextSplitter(
-        chunk_size=settings.CHUNK_SIZE,
-        chunk_overlap=settings.CHUNK_OVERLAP,
-        length_function=len,
-        separators=["\n\n", "\n", ". ", " ", ""],
-    )
-    return splitter.split_text(text)
+    """Split text into overlapping chunks (no external dependencies)."""
+    chunk_size = settings.CHUNK_SIZE
+    chunk_overlap = settings.CHUNK_OVERLAP
+
+    # Split on paragraph boundaries first
+    paragraphs = re.split(r"\n\n+", text)
+    chunks: list[str] = []
+    current = ""
+
+    for para in paragraphs:
+        if len(current) + len(para) + 2 <= chunk_size:
+            current = (current + "\n\n" + para).strip() if current else para
+        else:
+            if current:
+                chunks.append(current)
+            # If single paragraph exceeds chunk_size, split by sentence
+            if len(para) > chunk_size:
+                sentences = re.split(r"(?<=[.!?])\s+", para)
+                buf = ""
+                for sent in sentences:
+                    if len(buf) + len(sent) + 1 <= chunk_size:
+                        buf = (buf + " " + sent).strip() if buf else sent
+                    else:
+                        if buf:
+                            chunks.append(buf)
+                        buf = sent
+                if buf:
+                    current = buf
+                else:
+                    current = ""
+            else:
+                current = para
+
+    if current:
+        chunks.append(current)
+
+    # Apply overlap: prepend tail of previous chunk
+    if chunk_overlap > 0 and len(chunks) > 1:
+        overlapped: list[str] = [chunks[0]]
+        for i in range(1, len(chunks)):
+            tail = chunks[i - 1][-chunk_overlap:]
+            overlapped.append((tail + " " + chunks[i]).strip())
+        return overlapped
+
+    return chunks or [text[:chunk_size]]
 
 
 def process_document(file_path: str, file_type: str) -> tuple[str, list[str]]:

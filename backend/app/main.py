@@ -1,19 +1,24 @@
 """AI Document Intelligence Assistant — FastAPI Application."""
 
+import logging
 import os
 from pathlib import Path
 
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
-from fastapi.responses import FileResponse
+from fastapi.responses import FileResponse, JSONResponse
 
 from .config import settings
 from .database import init_db
 from .routers import chat, documents, extraction, export, summary
 
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
+
 # Initialize database tables
 init_db()
+logger.info("Database initialized")
 
 # Create FastAPI app
 app = FastAPI(
@@ -23,6 +28,11 @@ app = FastAPI(
     docs_url="/docs",
     redoc_url="/redoc",
 )
+
+
+@app.on_event("startup")
+async def startup_event():
+    logger.info("==> DocIntel Pro backend started successfully")
 
 # CORS middleware
 app.add_middleware(
@@ -39,6 +49,12 @@ app.include_router(chat.router)
 app.include_router(summary.router)
 app.include_router(extraction.router)
 app.include_router(export.router)
+
+
+@app.get("/health")
+async def health_check():
+    """Health check endpoint for Render."""
+    return JSONResponse({"status": "ok", "version": settings.APP_VERSION})
 
 # Serve uploaded files
 app.mount("/uploads", StaticFiles(directory=str(settings.UPLOAD_DIR)), name="uploads")
