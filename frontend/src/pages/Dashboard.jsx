@@ -8,6 +8,7 @@ import {
   Upload,
   Search,
   Loader2,
+  Filter,
 } from 'lucide-react'
 import { getStats, deleteDocument } from '../services/api'
 import DocumentCard from '../components/DocumentCard'
@@ -53,10 +54,10 @@ export default function Dashboard() {
   }
 
   const statCards = [
-    { label: 'Documents', value: stats?.total_documents || 0, icon: FileText, color: 'text-blue-400', bg: 'bg-blue-500/10' },
-    { label: 'Queries', value: stats?.total_queries || 0, icon: MessageSquare, color: 'text-emerald-400', bg: 'bg-emerald-500/10' },
-    { label: 'Summaries', value: stats?.summaries_generated || 0, icon: Sparkles, color: 'text-amber-400', bg: 'bg-amber-500/10' },
-    { label: 'Storage', value: formatBytes(stats?.total_size_bytes || 0), icon: HardDrive, color: 'text-purple-400', bg: 'bg-purple-500/10' },
+    { label: 'Active Documents', value: stats?.total_documents || 0, icon: FileText },
+    { label: 'Queries Answered', value: stats?.total_queries || 0, icon: MessageSquare },
+    { label: 'Executive Summaries', value: stats?.summaries_generated || 0, icon: Sparkles },
+    { label: 'Ingested Storage', value: formatBytes(stats?.total_size_bytes || 0), icon: HardDrive },
   ]
 
   const filteredDocs = allDocuments.filter((doc) =>
@@ -64,67 +65,79 @@ export default function Dashboard() {
   )
 
   return (
-    <div className="space-y-8">
-      {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+    <div className="space-y-6">
+      {/* Header bar */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-2 border-b border-[#E5E7EB]">
         <div>
-          <h1 className="text-2xl font-bold text-white">Dashboard</h1>
-          <p className="text-dark-400 text-sm mt-1">Overview of your document intelligence platform.</p>
+          <h1 className="text-xl font-bold text-[#111827] tracking-tight">Document Repository & Telemetry</h1>
+          <p className="text-xs text-[#6B7280] mt-0.5 font-mono">
+            Audit-grade document workspace • Multi-modal RAG search
+          </p>
         </div>
-        <Link to="/upload" className="btn-primary">
-          <Upload className="w-4 h-4" />
-          Upload Document
-        </Link>
+        <div className="flex items-center gap-2">
+          <Link to="/upload" className="btn-primary">
+            <Upload className="w-3.5 h-3.5" />
+            Upload Document
+          </Link>
+        </div>
       </div>
 
-      {/* Stats */}
+      {/* Metrics Row (High Density Swiss Style) */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-        {statCards.map(({ label, value, icon: Icon, color, bg }) => (
-          <div key={label} className="card">
-            <div className="flex items-center gap-3">
-              <div className={`w-10 h-10 ${bg} rounded-xl flex items-center justify-center`}>
-                <Icon className={`w-5 h-5 ${color}`} />
-              </div>
-              <div>
-                <p className="text-2xl font-bold text-white">{value}</p>
-                <p className="text-xs text-dark-400">{label}</p>
-              </div>
+        {statCards.map(({ label, value, icon: Icon }) => (
+          <div key={label} className="p-4 rounded-lg bg-white border border-[#E5E7EB] shadow-subtle space-y-1">
+            <div className="flex items-center justify-between">
+              <span className="text-xs font-medium text-[#6B7280]">{label}</span>
+              <Icon className="w-4 h-4 text-[#9CA3AF]" />
             </div>
+            <p className="text-2xl font-bold font-mono text-[#111827] tracking-tight">{value}</p>
           </div>
         ))}
       </div>
 
-      {/* Documents */}
-      <div>
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4">
-          <h2 className="text-lg font-semibold text-white">Documents</h2>
-          <div className="relative w-full sm:w-64">
-            <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-dark-400" />
+      {/* Search & Document Ledger */}
+      <div className="space-y-4">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <div className="flex items-center gap-2">
+            <h2 className="text-sm font-bold text-[#111827] uppercase tracking-wider font-mono">
+              Indexed Documents
+            </h2>
+            <span className="text-[11px] font-mono px-2 py-0.5 rounded bg-[#F3F4F6] text-[#4B5563] border border-[#E5E7EB]">
+              {filteredDocs.length} Total
+            </span>
+          </div>
+
+          <div className="relative w-full sm:w-72">
+            <Search className="w-3.5 h-3.5 absolute left-3 top-1/2 -translate-y-1/2 text-[#9CA3AF]" />
             <input
               type="text"
-              placeholder="Search documents..."
+              placeholder="Filter by filename or extension..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="input-field pl-9 w-full text-sm"
+              className="input-field pl-8 text-xs font-mono"
             />
           </div>
         </div>
 
         {loading ? (
-          <div className="text-center py-12">
-            <Loader2 className="w-8 h-8 text-primary-400 animate-spin mx-auto" />
+          <div className="text-center py-16 bg-white border border-[#E5E7EB] rounded-lg">
+            <Loader2 className="w-6 h-6 text-[#111827] animate-spin mx-auto" />
+            <p className="text-xs text-[#6B7280] font-mono mt-2">Loading document index...</p>
           </div>
         ) : filteredDocs.length === 0 ? (
-          <div className="card text-center py-12">
-            <FileText className="w-12 h-12 text-dark-500 mx-auto mb-3" />
-            <p className="text-dark-400 mb-4">No documents yet.</p>
-            <Link to="/upload" className="btn-primary">
-              <Upload className="w-4 h-4" />
-              Upload Your First Document
+          <div className="card text-center py-16 space-y-3">
+            <FileText className="w-10 h-10 text-[#9CA3AF] mx-auto" />
+            <div>
+              <p className="text-sm font-semibold text-[#111827]">No documents found</p>
+              <p className="text-xs text-[#6B7280] mt-1">Upload a PDF, DOCX, or TXT file to begin analysis.</p>
+            </div>
+            <Link to="/upload" className="btn-primary inline-flex">
+              <Upload className="w-3.5 h-3.5" />
+              Upload Document
             </Link>
           </div>
         ) : (
-          <div className="space-y-3">
+          <div className="space-y-2.5">
             {filteredDocs.map((doc) => (
               <DocumentCard key={doc.id} document={doc} onDelete={handleDelete} />
             ))}

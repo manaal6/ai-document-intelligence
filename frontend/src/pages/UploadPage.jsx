@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { ArrowRight, CheckCircle, FileText } from 'lucide-react'
+import { ArrowRight, CheckCircle2, ShieldCheck, FileText, ArrowLeft } from 'lucide-react'
 import FileUpload from '../components/FileUpload'
 
 export default function UploadPage() {
@@ -8,12 +8,12 @@ export default function UploadPage() {
   const navigate = useNavigate()
 
   return (
-    <div className="max-w-2xl mx-auto space-y-8">
+    <div className="max-w-2xl mx-auto space-y-6">
       {/* Header */}
-      <div>
-        <h1 className="text-2xl font-bold text-white">Upload Document</h1>
-        <p className="text-dark-400 text-sm mt-1">
-          Upload a PDF, TXT, or DOCX file for AI analysis.
+      <div className="pb-3 border-b border-[#E5E7EB]">
+        <h1 className="text-xl font-bold text-[#111827] tracking-tight">Ingest Document</h1>
+        <p className="text-xs text-[#6B7280] font-mono mt-0.5">
+          Multi-modal chunking & vector indexing pipeline
         </p>
       </div>
 
@@ -22,40 +22,45 @@ export default function UploadPage() {
 
       {/* Success State */}
       {uploaded && (
-        <div className="card bg-emerald-500/5 border-emerald-500/20">
-          <div className="flex items-center gap-3 mb-4">
-            <CheckCircle className="w-5 h-5 text-emerald-400" />
-            <p className="font-medium text-emerald-400">Document processed successfully!</p>
+        <div className="p-4 rounded-lg bg-[#ECFDF5] border border-[#A7F3D0] space-y-3">
+          <div className="flex items-center gap-2">
+            <CheckCircle2 className="w-4 h-4 text-[#059669]" />
+            <p className="font-semibold text-xs text-[#065F46] font-mono">Document Processed & Ingested Successfully</p>
           </div>
-          <p className="text-sm text-dark-300 mb-4">
-            Your document has been uploaded, text extracted, and indexed for AI search.
-            You can now chat with it, generate summaries, or extract information.
+          <p className="text-xs text-[#065F46] leading-relaxed">
+            Text extraction, sentence tokenization, and vector embeddings in ChromaDB are complete. You can now perform citation-grounded Q&A and generate executive briefs.
           </p>
-          <div className="flex gap-3">
-            <button onClick={() => setUploaded(false)} className="btn-secondary">
-              Upload Another
+          <div className="flex gap-2 pt-1">
+            <button onClick={() => setUploaded(false)} className="btn-secondary text-xs">
+              Upload Another File
             </button>
-            <button onClick={() => navigate('/dashboard')} className="btn-primary">
-              Go to Dashboard
-              <ArrowRight className="w-4 h-4" />
+            <button onClick={() => navigate('/dashboard')} className="btn-primary text-xs">
+              Go to Workspace
+              <ArrowRight className="w-3.5 h-3.5" />
             </button>
           </div>
         </div>
       )}
 
-      {/* Supported Formats */}
-      <div className="card">
-        <h3 className="font-medium text-dark-200 mb-3">Supported Formats</h3>
+      {/* Supported Specs Table */}
+      <div className="p-4 rounded-lg bg-white border border-[#E5E7EB] shadow-subtle space-y-3">
+        <h3 className="text-xs font-bold text-[#111827] uppercase tracking-wider font-mono">
+          Supported Ingestion Formats
+        </h3>
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
           {[
-            { ext: 'PDF', desc: 'Portable Document Format', icon: '📄' },
-            { ext: 'TXT', desc: 'Plain Text Files', icon: '📝' },
-            { ext: 'DOCX', desc: 'Microsoft Word', icon: '📋' },
-          ].map(({ ext, desc, icon }) => (
-            <div key={ext} className="text-center p-4 bg-dark-900 rounded-xl">
-              <div className="text-2xl mb-2">{icon}</div>
-              <p className="font-medium text-dark-100 text-sm">{ext}</p>
-              <p className="text-xs text-dark-400">{desc}</p>
+            { ext: 'PDF', desc: 'PyMuPDF native extraction', badge: 'Fast OCR' },
+            { ext: 'TXT', desc: 'Raw UTF-8 text parsing', badge: 'Direct' },
+            { ext: 'DOCX', desc: 'Word XML tree extraction', badge: 'Office' },
+          ].map(({ ext, desc, badge }) => (
+            <div key={ext} className="p-3 bg-[#F9FAFB] border border-[#E5E7EB] rounded-md space-y-1">
+              <div className="flex items-center justify-between">
+                <span className="font-mono font-bold text-xs text-[#111827]">{ext}</span>
+                <span className="text-[10px] font-mono text-[#059669] bg-white border border-[#E5E7EB] px-1.5 rounded">
+                  {badge}
+                </span>
+              </div>
+              <p className="text-[11px] text-[#6B7280]">{desc}</p>
             </div>
           ))}
         </div>

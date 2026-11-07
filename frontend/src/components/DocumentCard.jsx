@@ -1,16 +1,10 @@
-import { FileText, File, Trash2, MessageSquare } from 'lucide-react'
+import { FileText, Trash2, ArrowRight } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
 
-const typeIcons = {
-  pdf: '📄',
-  txt: '📝',
-  docx: '📋',
-}
-
 const statusConfig = {
-  ready: { label: 'Ready', className: 'badge-ready' },
-  processing: { label: 'Processing', className: 'badge-processing' },
-  error: { label: 'Error', className: 'badge-error' },
+  ready: { label: 'PARSED & INDEXED', className: 'badge-ready' },
+  processing: { label: 'PROCESSING', className: 'badge-processing' },
+  error: { label: 'INGESTION ERROR', className: 'badge-error' },
 }
 
 export default function DocumentCard({ document, onDelete }) {
@@ -35,53 +29,55 @@ export default function DocumentCard({ document, onDelete }) {
 
   return (
     <div
-      className="card-hover group"
+      className="card-hover flex items-center justify-between p-4 bg-white border border-[#E5E7EB] rounded-lg transition-all"
       onClick={() => document.status === 'ready' && navigate(`/document/${document.id}`)}
     >
-      <div className="flex items-start gap-3 sm:gap-4">
-        {/* File type icon */}
-        <div className="w-10 h-10 sm:w-12 sm:h-12 bg-dark-700 rounded-xl flex items-center justify-center text-lg sm:text-xl shrink-0">
-          {typeIcons[document.file_type] || '📄'}
+      <div className="flex items-center gap-3.5 min-w-0">
+        {/* File extension badge */}
+        <div className="w-9 h-9 rounded bg-[#F3F4F6] border border-[#E5E7EB] flex items-center justify-center font-mono text-[11px] font-bold text-[#374151] uppercase shrink-0">
+          {document.file_type || 'DOC'}
         </div>
 
-        {/* Info */}
-        <div className="flex-1 min-w-0">
-          <h3 className="font-medium text-dark-100 truncate group-hover:text-primary-400 transition-colors text-sm sm:text-base">
+        {/* File details */}
+        <div className="min-w-0">
+          <h3 className="font-medium text-xs sm:text-sm text-[#111827] truncate hover:underline">
             {document.original_filename}
           </h3>
-          <div className="flex items-center gap-2 sm:gap-3 mt-1 text-xs sm:text-sm text-dark-400">
+          <div className="flex items-center gap-2 mt-0.5 text-[11px] font-mono text-[#6B7280]">
             <span>{formatSize(document.file_size)}</span>
             <span>•</span>
-            <span>{formatDate(document.created_at)}</span>
+            <span>Indexed on {formatDate(document.created_at)}</span>
           </div>
         </div>
+      </div>
 
-        {/* Status + Actions */}
-        <div className="flex items-center gap-1 sm:gap-2 shrink-0">
-          <span className={`${status.className} hidden sm:inline-flex`}>{status.label}</span>
-          {document.status === 'ready' && (
-            <button
-              onClick={(e) => {
-                e.stopPropagation()
-                navigate(`/document/${document.id}`)
-              }}
-              className="p-2 text-dark-400 hover:text-primary-400 hover:bg-dark-700 rounded-lg transition-colors"
-              title="Chat with document"
-            >
-              <MessageSquare className="w-4 h-4" />
-            </button>
-          )}
+      {/* Status and Action Buttons */}
+      <div className="flex items-center gap-3 shrink-0">
+        <span className={status.className}>{status.label}</span>
+
+        {document.status === 'ready' && (
           <button
             onClick={(e) => {
               e.stopPropagation()
-              onDelete?.(document.id)
+              navigate(`/document/${document.id}`)
             }}
-            className="p-2 text-dark-400 hover:text-red-400 hover:bg-dark-700 rounded-lg transition-colors"
-            title="Delete document"
+            className="btn-secondary py-1 px-2.5 text-[11px]"
           >
-            <Trash2 className="w-4 h-4" />
+            <span>Open</span>
+            <ArrowRight className="w-3 h-3" />
           </button>
-        </div>
+        )}
+
+        <button
+          onClick={(e) => {
+            e.stopPropagation()
+            onDelete?.(document.id)
+          }}
+          className="p-1.5 text-[#9CA3AF] hover:text-rose-600 hover:bg-rose-50 rounded transition-colors"
+          title="Delete document"
+        >
+          <Trash2 className="w-3.5 h-3.5" />
+        </button>
       </div>
     </div>
   )

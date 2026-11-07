@@ -1,55 +1,17 @@
 import { useState, useRef } from 'react'
-import { Upload, File, CheckCircle, AlertCircle, X } from 'lucide-react'
+import { Upload, FileText, CheckCircle, AlertTriangle, Loader2 } from 'lucide-react'
 import { uploadDocument } from '../services/api'
-
-const ALLOWED_TYPES = ['application/pdf', 'text/plain', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document']
-const ALLOWED_EXTENSIONS = ['pdf', 'txt', 'docx']
-const MAX_SIZE_MB = 20
 
 export default function FileUpload({ onUploadComplete }) {
   const [file, setFile] = useState(null)
   const [dragActive, setDragActive] = useState(false)
   const [uploading, setUploading] = useState(false)
   const [progress, setProgress] = useState(0)
-  const [status, setStatus] = useState(null) // 'success' | 'error'
-  const [errorMsg, setErrorMsg] = useState('')
-  const fileInputRef = useRef(null)
+  const [error, setError] = useState(null)
+  const inputRef = useRef(null)
 
-  const validateFile = (f) => {
-    const ext = f.name.split('.').pop().toLowerCase()
-    if (!ALLOWED_EXTENSIONS.includes(ext)) {
-      return `Invalid file type. Allowed: ${ALLOWED_EXTENSIONS.join(', ')}`
-    }
-    if (f.size > MAX_SIZE_MB * 1024 * 1024) {
-      return `File too large. Maximum size: ${MAX_SIZE_MB}MB`
-    }
-    return null
-  }
-
-  const handleFile = async (f) => {
-    const error = validateFile(f)
-    if (error) {
-      setErrorMsg(error)
-      setStatus('error')
-      return
-    }
-
-    setFile(f)
-    setStatus(null)
-    setUploading(true)
-    setProgress(0)
-
-    try {
-      await uploadDocument(f, setProgress)
-      setStatus('success')
-      onUploadComplete?.()
-    } catch (err) {
-      setStatus('error')
-      setErrorMsg(err.response?.data?.detail || 'Upload failed. Please try again.')
-    } finally {
-      setUploading(false)
-    }
-  }
+  const allowedTypes = ['.pdf', '.txt', '.docx']
+  const maxSize = 10 * 1024 * 1024 // 10MB
 
   const handleDrag = (e) => {
     e.preventDefault()
@@ -61,27 +23,61 @@ export default function FileUpload({ onUploadComplete }) {
     }
   }
 
+  const validateFile = (f) => {
+    const ext = '.' + f.name.split('.').pop().toLowerCase()
+    if (!allowedTypes.includes(ext)) {
+      setError(`Invalid file type. Allowed: ${allowedTypes.join(', ')}`)
+      return false
+    }
+    if (f.size > maxSize) {
+      setError('File size exceeds 10MB limit.')
+      return false
+    }
+    setError(null)
+    return true
+  }
+
   const handleDrop = (e) => {
     e.preventDefault()
     e.stopPropagation()
     setDragActive(false)
-    if (e.dataTransfer.files?.[0]) {
-      handleFile(e.dataTransfer.files[0])
+
+    if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+      const droppedFile = e.dataTransfer.files[0]
+      if (validateFile(droppedFile)) {
+        setFile(droppedFile)
+      }
     }
   }
 
   const handleChange = (e) => {
-    if (e.target.files?.[0]) {
-      handleFile(e.target.files[0])
+    if (e.target.files && e.target.files[0]) {
+      const selectedFile = e.target.files[0]
+      if (validateFile(selectedFile)) {
+        setFile(selectedFile)
+      }
     }
   }
 
-  const reset = () => {
-    setFile(null)
-    setStatus(null)
-    setErrorMsg('')
+  const handleUpload = async () => {
+    if (!file) return
+
+    setUploading(true)
     setProgress(0)
-    if (fileInputRef.current) fileInputRef.current.value = ''
+    setError(null)
+
+    try {
+      await uploadDocument(file, (progressEvent) => {
+        const percent = Math.round((progressEvent.loaded * 100) / progressEvent.total)
+        setProgress(percent)
+      })
+      setFile(null)
+      onUploadComplete?.()
+    } catch (err) {
+      setError(err.response?.data?.detail || 'Upload failed. Please check backend connection.')
+    } finally {
+      setUploading(false)
+    }
   }
 
   const formatSize = (bytes) => {
@@ -91,89 +87,90 @@ export default function FileUpload({ onUploadComplete }) {
   }
 
   return (
-    <div className="w-full">
-      {!file ? (
-        <div
-          onDragEnter={handleDrag}
-          onDragLeave={handleDrag}
-          onDragOver={handleDrag}
-          onDrop={handleDrop}
-          onClick={() => fileInputRef.current?.click()}
-          className={`border-2 border-dashed rounded-2xl p-8 sm:p-12 text-center cursor-pointer transition-all duration-200 ${
-            dragActive
-              ? 'border-primary-500 bg-primary-500/5'
-              : 'border-dark-600 hover:border-primary-500/50 hover:bg-dark-800/50'
-          }`}
-        >
-          <Upload className="w-12 h-12 mx-auto mb-4 text-dark-400" />
-          <p className="text-lg font-medium text-dark-200 mb-2">
-            Drop your document here
-          </p>
-          <p className="text-sm text-dark-400 mb-4">
-            or click to browse
-          </p>
-          <p className="text-xs text-dark-500">
-            Supports PDF, TXT, DOCX — Max {MAX_SIZE_MB}MB
-          </p>
-          <input
-            ref={fileInputRef}
-            type="file"
-            accept=".pdf,.txt,.docx"
-            onChange={handleChange}
-            className="hidden"
-          />
+    <div className="space-y-4">
+      {/* Drop Zone */}
+      <div
+        onDragEnter={handleDrag}
+        onDragLeave={handleDrag}
+        onDragOver={handleDrag}
+        onDrop={handleDrop}
+        onClick={() => inputRef.current?.click()}
+        className={`border border-dashed rounded-lg p-8 sm:p-12 text-center cursor-pointer transition-all ${
+          dragActive
+            ? 'border-[#111827] bg-[#F3F4F6]'
+            : 'border-[#D1D5DB] hover:border-[#9CA3AF] bg-white'
+        }`}
+      >
+        <input
+          ref={inputRef}
+          type="file"
+          accept=".pdf,.txt,.docx"
+          onChange={handleChange}
+          className="hidden"
+        />
+
+        <div className="w-10 h-10 rounded-md bg-[#F9FAFB] border border-[#E5E7EB] flex items-center justify-center mx-auto mb-3 text-[#111827]">
+          <Upload className="w-5 h-5 text-[#6B7280]" />
         </div>
-      ) : (
-        <div className="card">
-          <div className="flex items-center gap-4">
-            <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${
-              status === 'success' ? 'bg-emerald-500/10' :
-              status === 'error' ? 'bg-red-500/10' : 'bg-primary-500/10'
-            }`}>
-              {status === 'success' ? (
-                <CheckCircle className="w-6 h-6 text-emerald-400" />
-              ) : status === 'error' ? (
-                <AlertCircle className="w-6 h-6 text-red-400" />
-              ) : (
-                <File className="w-6 h-6 text-primary-400" />
-              )}
+
+        <p className="font-semibold text-xs text-[#111827] uppercase tracking-wider font-mono">
+          Drag & Drop Document Here
+        </p>
+        <p className="text-xs text-[#6B7280] mt-1">
+          or click to browse local filesystem
+        </p>
+        <p className="text-[11px] font-mono text-[#9CA3AF] mt-2">
+          PDF, TXT, DOCX up to 10MB
+        </p>
+      </div>
+
+      {/* Error */}
+      {error && (
+        <div className="p-3 bg-rose-50 border border-rose-200 rounded-md flex items-center gap-2 text-rose-700 text-xs">
+          <AlertTriangle className="w-4 h-4 shrink-0 text-rose-500" />
+          <span>{error}</span>
+        </div>
+      )}
+
+      {/* Selected File */}
+      {file && (
+        <div className="p-4 bg-white border border-[#E5E7EB] rounded-lg shadow-subtle flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div className="flex items-center gap-3">
+            <div className="w-8 h-8 rounded bg-[#F3F4F6] border border-[#E5E7EB] flex items-center justify-center font-mono text-xs font-bold text-[#111827]">
+              DOC
             </div>
-            <div className="flex-1 min-w-0">
-              <p className="font-medium text-dark-100 truncate">{file.name}</p>
-              <p className="text-sm text-dark-400">{formatSize(file.size)}</p>
+            <div>
+              <p className="font-medium text-xs text-[#111827]">{file.name}</p>
+              <p className="text-[11px] font-mono text-[#6B7280]">{formatSize(file.size)}</p>
             </div>
-            {!uploading && (
-              <button onClick={reset} className="p-2 text-dark-400 hover:text-white">
-                <X className="w-5 h-5" />
-              </button>
-            )}
           </div>
 
-          {/* Progress bar */}
-          {uploading && (
-            <div className="mt-4">
-              <div className="flex justify-between text-sm mb-1">
-                <span className="text-dark-400">Uploading...</span>
-                <span className="text-primary-400">{progress}%</span>
-              </div>
-              <div className="w-full bg-dark-700 rounded-full h-2">
-                <div
-                  className="bg-primary-500 h-2 rounded-full transition-all duration-300"
-                  style={{ width: `${progress}%` }}
-                />
-              </div>
-            </div>
-          )}
-
-          {/* Status messages */}
-          {status === 'success' && (
-            <p className="mt-3 text-sm text-emerald-400">
-              Document uploaded and processed successfully!
-            </p>
-          )}
-          {status === 'error' && (
-            <p className="mt-3 text-sm text-red-400">{errorMsg}</p>
-          )}
+          <div className="flex items-center gap-2">
+            <button
+              onClick={() => setFile(null)}
+              className="btn-secondary text-xs"
+              disabled={uploading}
+            >
+              Cancel
+            </button>
+            <button
+              onClick={handleUpload}
+              className="btn-primary text-xs"
+              disabled={uploading}
+            >
+              {uploading ? (
+                <>
+                  <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                  <span>Processing {progress}%</span>
+                </>
+              ) : (
+                <>
+                  <Upload className="w-3.5 h-3.5" />
+                  <span>Ingest Document</span>
+                </>
+              )}
+            </button>
+          </div>
         </div>
       )}
     </div>

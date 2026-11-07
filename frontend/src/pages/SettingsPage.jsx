@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Settings, Save, Info } from 'lucide-react'
+import { Settings, Save, CheckCircle2, ShieldCheck, Database } from 'lucide-react'
 
 export default function SettingsPage() {
   const [settings, setSettings] = useState({
@@ -7,162 +7,159 @@ export default function SettingsPage() {
     chunkSize: 500,
     chunkOverlap: 50,
     topKResults: 5,
-    temperature: 0.3,
+    temperature: 0.2,
     maxTokens: 2048,
   })
   const [saved, setSaved] = useState(false)
 
   const handleSave = () => {
-    // In a real app, this would send to the backend
     localStorage.setItem('docAssistantSettings', JSON.stringify(settings))
     setSaved(true)
     setTimeout(() => setSaved(false), 2000)
   }
 
   return (
-    <div className="max-w-2xl mx-auto space-y-8">
+    <div className="max-w-2xl mx-auto space-y-6">
       {/* Header */}
-      <div>
-        <h1 className="text-2xl font-bold text-white">Settings</h1>
-        <p className="text-dark-400 text-sm mt-1">
-          Configure the AI document intelligence assistant.
+      <div className="pb-3 border-b border-[#E5E7EB]">
+        <h1 className="text-xl font-bold text-[#111827] tracking-tight">System & Pipeline Configuration</h1>
+        <p className="text-xs text-[#6B7280] font-mono mt-0.5">
+          Tune RAG chunk parameters, retrieval depth, and inference settings
         </p>
       </div>
 
       {/* LLM Settings */}
-      <div className="card space-y-6">
-        <h3 className="font-semibold text-dark-100 flex items-center gap-2">
-          <Settings className="w-5 h-5 text-primary-400" />
-          LLM Configuration
-        </h3>
+      <div className="p-5 bg-white border border-[#E5E7EB] rounded-lg shadow-subtle space-y-5">
+        <div className="flex items-center justify-between pb-3 border-b border-[#E5E7EB]">
+          <span className="text-xs font-bold text-[#111827] uppercase tracking-wider font-mono flex items-center gap-1.5">
+            <Settings className="w-3.5 h-3.5 text-[#6B7280]" />
+            Inference Model
+          </span>
+          <span className="text-[10px] font-mono text-[#059669] bg-[#ECFDF5] border border-[#A7F3D0] px-2 py-0.5 rounded font-semibold">
+            GROQ ACCELERATED
+          </span>
+        </div>
 
         <div>
-          <label className="block text-sm font-medium text-dark-300 mb-1.5">
-            LLM Provider
+          <label className="block text-xs font-medium text-[#374151] mb-1">
+            Active LLM Model
           </label>
           <select
             value={settings.ollamaModel}
             onChange={(e) => setSettings({ ...settings, ollamaModel: e.target.value })}
-            className="input-field"
+            className="input-field text-xs font-mono"
           >
-            <option value="llama3.1">Llama 3.1 (Groq)</option>
-            <option value="qwen2.5">Qwen 2.5</option>
-            <option value="mistral">Mistral</option>
+            <option value="llama3.1">Llama 3.1 70B (Groq Production)</option>
+            <option value="qwen2.5">Qwen 2.5 72B (Multilingual)</option>
+            <option value="mistral">Mistral Large (High Grounding)</option>
           </select>
-          <p className="text-xs text-dark-500 mt-1">Select the model to use for AI processing.</p>
+          <p className="text-[11px] text-[#6B7280] mt-1">High-speed inference via Groq cloud API.</p>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-1">
           <div>
-            <label className="block text-sm font-medium text-dark-300 mb-1.5">
-              Temperature: {settings.temperature}
-            </label>
+            <div className="flex justify-between text-xs font-medium text-[#374151] mb-1">
+              <span>Temperature</span>
+              <span className="font-mono text-[#111827]">{settings.temperature}</span>
+            </div>
             <input
               type="range"
               min="0"
               max="1"
-              step="0.1"
+              step="0.05"
               value={settings.temperature}
               onChange={(e) => setSettings({ ...settings, temperature: parseFloat(e.target.value) })}
-              className="w-full accent-primary-500"
+              className="w-full accent-[#111827]"
             />
-            <div className="flex justify-between text-xs text-dark-500">
-              <span>Precise</span>
-              <span>Creative</span>
+            <div className="flex justify-between text-[10px] text-[#9CA3AF] font-mono mt-1">
+              <span>0.0 (Strict Audit)</span>
+              <span>1.0 (Creative)</span>
             </div>
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-dark-300 mb-1.5">
-              Max Tokens
+            <label className="block text-xs font-medium text-[#374151] mb-1">
+              Max Response Tokens
             </label>
             <input
               type="number"
               value={settings.maxTokens}
-              onChange={(e) => setSettings({ ...settings, maxTokens: parseInt(e.target.value) })}
-              className="input-field"
-              min="256"
-              max="8192"
+              onChange={(e) => setSettings({ ...settings, maxTokens: parseInt(e.target.value) || 2048 })}
+              className="input-field text-xs font-mono"
             />
           </div>
         </div>
       </div>
 
       {/* RAG Settings */}
-      <div className="card space-y-6">
-        <h3 className="font-semibold text-dark-100 flex items-center gap-2">
-          <Info className="w-5 h-5 text-primary-400" />
-          RAG Configuration
-        </h3>
+      <div className="p-5 bg-white border border-[#E5E7EB] rounded-lg shadow-subtle space-y-5">
+        <div className="flex items-center justify-between pb-3 border-b border-[#E5E7EB]">
+          <span className="text-xs font-bold text-[#111827] uppercase tracking-wider font-mono flex items-center gap-1.5">
+            <Database className="w-3.5 h-3.5 text-[#6B7280]" />
+            Vector & Chunk Partitioning
+          </span>
+          <span className="text-[10px] font-mono text-[#4B5563] bg-[#F3F4F6] border border-[#E5E7EB] px-2 py-0.5 rounded">
+            ChromaDB Native
+          </span>
+        </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
           <div>
-            <label className="block text-sm font-medium text-dark-300 mb-1.5">
+            <label className="block text-xs font-medium text-[#374151] mb-1">
               Chunk Size
             </label>
             <input
               type="number"
               value={settings.chunkSize}
-              onChange={(e) => setSettings({ ...settings, chunkSize: parseInt(e.target.value) })}
-              className="input-field"
-              min="100"
-              max="2000"
+              onChange={(e) => setSettings({ ...settings, chunkSize: parseInt(e.target.value) || 500 })}
+              className="input-field text-xs font-mono"
             />
-            <p className="text-xs text-dark-500 mt-1">Characters per chunk.</p>
+            <p className="text-[10px] text-[#9CA3AF] mt-1 font-mono">Tokens / segment</p>
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-dark-300 mb-1.5">
+            <label className="block text-xs font-medium text-[#374151] mb-1">
               Chunk Overlap
             </label>
             <input
               type="number"
               value={settings.chunkOverlap}
-              onChange={(e) => setSettings({ ...settings, chunkOverlap: parseInt(e.target.value) })}
-              className="input-field"
-              min="0"
-              max="500"
+              onChange={(e) => setSettings({ ...settings, chunkOverlap: parseInt(e.target.value) || 50 })}
+              className="input-field text-xs font-mono"
             />
-            <p className="text-xs text-dark-500 mt-1">Overlap between chunks.</p>
+            <p className="text-[10px] text-[#9CA3AF] mt-1 font-mono">Boundary tokens</p>
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-dark-300 mb-1.5">
-              Top K Results
+            <label className="block text-xs font-medium text-[#374151] mb-1">
+              Top-K Retrieval
             </label>
             <input
               type="number"
               value={settings.topKResults}
-              onChange={(e) => setSettings({ ...settings, topKResults: parseInt(e.target.value) })}
-              className="input-field"
-              min="1"
-              max="20"
+              onChange={(e) => setSettings({ ...settings, topKResults: parseInt(e.target.value) || 5 })}
+              className="input-field text-xs font-mono"
             />
-            <p className="text-xs text-dark-500 mt-1">Chunks retrieved per query.</p>
+            <p className="text-[10px] text-[#9CA3AF] mt-1 font-mono">Retrieved context docs</p>
           </div>
         </div>
       </div>
 
-      {/* Save */}
-      <div className="flex items-center gap-4">
-        <button onClick={handleSave} className="btn-primary">
-          <Save className="w-4 h-4" />
-          Save Settings
-        </button>
-        {saved && (
-          <span className="text-sm text-emerald-400">Settings saved!</span>
+      {/* Save Button */}
+      <div className="flex items-center justify-between pt-2">
+        {saved ? (
+          <span className="text-xs font-mono text-[#059669] flex items-center gap-1">
+            <CheckCircle2 className="w-3.5 h-3.5" />
+            Configuration saved locally
+          </span>
+        ) : (
+          <span className="text-xs text-[#9CA3AF] font-mono">Changes apply to subsequent sessions</span>
         )}
-      </div>
 
-      {/* Info */}
-      <div className="card bg-primary-500/5 border-primary-500/20">
-        <h3 className="font-medium text-primary-400 mb-2">About Settings</h3>
-        <p className="text-sm text-dark-300 leading-relaxed">
-          Settings are saved to your browser's local storage. Backend settings
-          require editing the <code className="bg-dark-800 px-1.5 py-0.5 rounded text-primary-300">.env</code> file
-          and restarting the server. Make sure your Groq API key is configured
-          in the <code className="bg-dark-800 px-1.5 py-0.5 rounded text-primary-300">.env</code> file.
-        </p>
+        <button onClick={handleSave} className="btn-primary text-xs">
+          <Save className="w-3.5 h-3.5" />
+          <span>Save Pipeline Configuration</span>
+        </button>
       </div>
     </div>
   )
